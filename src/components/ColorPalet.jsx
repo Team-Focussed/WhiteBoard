@@ -15,7 +15,7 @@ const ColorPalet = ({ color, setColor, ctx }) => {
         {ColorPaletColors.map((ColorPaletColor) => (
           <div
             key={ColorPaletColor}
-            className={ColorPaletColor == color ? "color selected" : "color"}
+            className={ColorPaletColor === color ? "color selected" : "color"}
             style={{
               backgroundColor: ColorPaletColor,
             }}

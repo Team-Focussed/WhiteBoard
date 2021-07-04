@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import ColorPalet from "./components/ColorPalet";
 import ToolBox from "./components/ToolBox";
 import Options from "./components/Options";
@@ -6,7 +6,7 @@ import "./App.css";
 import "./grid.min.css";
 
 function App() {
-  const [lineWidth, setLineWidth] = useState(15);
+  const [lineWidth, setLineWidth] = useState(5);
   const [canvas, setCanvas] = useState(null);
   const [ctx, setCtx] = useState(null);
   const [drawing, setDrawing] = useState(false);
@@ -21,10 +21,10 @@ function App() {
     setCtx(ctx);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    ctx.strokeStyle = `${color}80`;
+    ctx.strokeStyle = `#00000080`;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-    ctx.lineWidth = lineWidth;
+    ctx.lineWidth = 5;
   }, []);
   function randomPointInRadius(radius) {
     for (;;) {
@@ -98,9 +98,7 @@ function App() {
   const handleMouseUp = (e) => {
     setDrawing(false);
   };
-  const handleCursor = (e) => {
-    console.log(e);
-  };
+
   return (
     <div
       className="App"
