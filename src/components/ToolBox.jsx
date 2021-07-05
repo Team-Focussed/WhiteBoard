@@ -1,6 +1,12 @@
 import ToolLists from "./ToolLists";
 
-const AddText = ({ setShowAddText, ctx, lastX, lastY }) => {
+const AddText = ({
+  setShowAddText,
+  ctx,
+  restoreArray,
+  setRestoreArray,
+  canvas,
+}) => {
   return (
     <div className="card">
       <div className="title">Add Text</div>
@@ -34,6 +40,8 @@ const AddText = ({ setShowAddText, ctx, lastX, lastY }) => {
             document.querySelector("#x").value,
             document.querySelector("#y").value
           );
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          setRestoreArray([...restoreArray, img]);
           setShowAddText(false);
         }}
       >

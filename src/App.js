@@ -47,6 +47,9 @@ function App() {
 
   const handleMouseMove = (e) => {
     if (!drawing) return;
+    if (tool === "fill") {
+      return;
+    }
     if (tool === "line") {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.strokeStyle = color;
@@ -172,8 +175,9 @@ function App() {
         <AddText
           setShowAddText={setShowAddText}
           ctx={ctx}
-          lastX={lastX}
-          lastY={lastY}
+          restoreArray={restoreArray}
+          setRestoreArray={setRestoreArray}
+          canvas={canvas}
         />
       ) : (
         ""
