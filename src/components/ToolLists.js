@@ -3,6 +3,9 @@ const ToolLists = [
     name: "pen",
   },
   {
+    name: "move",
+  },
+  {
     name: "eraser",
   },
 

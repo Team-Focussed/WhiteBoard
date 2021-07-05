@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-// import ColorPalet from "./components/ColorPalet";
+import { AddText } from "./components/ToolBox";
 import ToolBox from "./components/ToolBox";
 import Options from "./components/Options";
 import "./App.css";
@@ -16,6 +16,7 @@ function App() {
   const [tool, setTool] = useState("pen");
   const [restoreArray, setRestoreArray] = useState([]);
   const [redoArray, setRedoArray] = useState([]);
+  const [showAddText, setShowAddText] = useState(false);
   useLayoutEffect(() => {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -58,7 +59,19 @@ function App() {
       ctx.stroke();
       return;
     }
-
+    if (tool === "move") {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let mouseX = parseInt(e.clientX - canvas.offsetLeft);
+      let mouseY = parseInt(e.clientY - canvas.offsetTop);
+      let width = mouseX - lastX;
+      let height = mouseY - lastY;
+      restoreArray.forEach((element) => {
+        if (element) {
+          ctx.putImageData(element, width, height);
+        }
+      });
+      return;
+    }
     if (tool === "rectangle") {
       let mouseX = parseInt(e.clientX - canvas.offsetLeft);
       let mouseY = parseInt(e.clientY - canvas.offsetTop);
@@ -155,6 +168,16 @@ function App() {
           tool === "eraser" ? "1px solid #000" : "1px solid" + color;
       }}
     >
+      {showAddText ? (
+        <AddText
+          setShowAddText={setShowAddText}
+          ctx={ctx}
+          lastX={lastX}
+          lastY={lastY}
+        />
+      ) : (
+        ""
+      )}
       <div className="cursor"></div>
       <canvas
         id="canvas"
@@ -179,6 +202,7 @@ function App() {
         setRestoreArray={setRestoreArray}
         redoArray={redoArray}
         setRedoArray={setRedoArray}
+        setShowAddText={setShowAddText}
       />
       {/* <ColorPalet color={color} setColor={setColor} ctx={ctx} /> */}
     </div>
