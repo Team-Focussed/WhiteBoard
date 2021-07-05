@@ -13,6 +13,9 @@ const ToolLists = [
     name: "rectangle",
   },
   {
+    name: "circle",
+  },
+  {
     name: "spray",
   },
   {

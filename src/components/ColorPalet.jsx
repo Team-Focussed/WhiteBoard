@@ -1,5 +1,4 @@
 import ColorPaletColors from "./ColorPaletColors";
-
 const ColorPalet = ({ color, setColor, ctx }) => {
   return (
     <div className="colors">
@@ -26,6 +25,19 @@ const ColorPalet = ({ color, setColor, ctx }) => {
           ></div>
         ))}
         <br />
+        {ColorPaletColors.map((ColorPaletColor) => (
+          <div
+            key={ColorPaletColor}
+            className={ColorPaletColor === color ? "color selected" : "color"}
+            style={{
+              backgroundColor: ColorPaletColor,
+            }}
+            onClick={() => {
+              setColor(ColorPaletColor);
+              ctx.strokeStyle = ColorPaletColor;
+            }}
+          ></div>
+        ))}
       </div>
     </div>
   );

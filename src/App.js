@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from "react";
-import ColorPalet from "./components/ColorPalet";
+// import ColorPalet from "./components/ColorPalet";
 import ToolBox from "./components/ToolBox";
 import Options from "./components/Options";
 import "./App.css";
@@ -14,6 +14,8 @@ function App() {
   const [lastX, setLastX] = useState(0);
   const [lastY, setLastY] = useState(0);
   const [tool, setTool] = useState("pen");
+  const [restoreArray, setRestoreArray] = useState([]);
+  const [redoArray, setRedoArray] = useState([]);
   useLayoutEffect(() => {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
@@ -43,15 +45,54 @@ function App() {
   }
 
   const handleMouseMove = (e) => {
-    if (tool === "fill") {
+    if (!drawing) return;
+    if (tool === "line") {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = color;
+      restoreArray.forEach((element) => {
+        ctx.putImageData(element, 0, 0);
+      });
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(e.clientX, e.clientY);
+      ctx.stroke();
       return;
     }
-    if (!drawing) return;
+
     if (tool === "rectangle") {
-      ctx.clearRect(lastX, lastY, e.clientX, e.clientX);
-      ctx.strokeStyle = "transparent";
-      ctx.stroke = "#000";
-      ctx.fillRect(lastX, lastY, e.clientX, e.clientY);
+      let mouseX = parseInt(e.clientX - canvas.offsetLeft);
+      let mouseY = parseInt(e.clientY - canvas.offsetTop);
+      let width = mouseX - lastX;
+      let height = mouseY - lastY;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = color;
+      // ctx.stroke = "#000";
+      restoreArray.forEach((element) => {
+        ctx.putImageData(element, 0, 0);
+      });
+      ctx.strokeRect(lastX, lastY, width, height);
+      // ctx.fillRect(
+      //   lastX,
+      //   lastY,
+      //   canvas.width - e.clientX,
+      //   canvas.height - e.clientY
+      // );
+      return;
+    }
+    if (tool === "circle") {
+      let mouseX = parseInt(e.clientX - canvas.offsetLeft);
+      let mouseY = parseInt(e.clientY - canvas.offsetTop);
+      let radius = Math.sqrt(
+        Math.pow(mouseX - lastX, 2) + Math.pow(mouseY - lastY, 2)
+      );
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = color;
+      restoreArray.forEach((element) => {
+        ctx.putImageData(element, 0, 0);
+      });
+      ctx.beginPath();
+      ctx.arc(lastX, lastY, radius, 0, 2 * Math.PI);
+      ctx.stroke();
       return;
     }
     if (tool === "spray") {
@@ -96,6 +137,8 @@ function App() {
   };
 
   const handleMouseUp = (e) => {
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    setRestoreArray([...restoreArray, img]);
     setDrawing(false);
   };
 
@@ -118,15 +161,26 @@ function App() {
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        // onMouseLeave={handleMouseUp}
       ></canvas>
       <Options
         lineWidth={lineWidth}
         setLineWidth={setLineWidth}
+        color={color}
+        setColor={setColor}
         ctx={ctx}
       ></Options>
-      <ToolBox tool={tool} setTool={setTool} />
-      <ColorPalet color={color} setColor={setColor} ctx={ctx} />
+      <ToolBox
+        tool={tool}
+        setTool={setTool}
+        ctx={ctx}
+        canvas={canvas}
+        restoreArray={restoreArray}
+        setRestoreArray={setRestoreArray}
+        redoArray={redoArray}
+        setRedoArray={setRedoArray}
+      />
+      {/* <ColorPalet color={color} setColor={setColor} ctx={ctx} /> */}
     </div>
   );
 }
